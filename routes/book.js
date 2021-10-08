@@ -1,9 +1,25 @@
 const express = require('express');
 const Book = require('../model/book')
 const router = express.Router();
+const multer = require('multer');
+const sharp = require('sharp');
 require('../db/mongoose')
 const validateBookInput = require('../validation/book')
 
+
+
+// multer options
+const upload = multer({
+    limits : {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(png|jpg|jpeg)$/)){
+        cb(new Error('Please upload an image.'))
+        }
+        cb(undefined, true)
+    }
+})
 
 
 // POST 
@@ -38,12 +54,13 @@ router.post('/api/book/', async (req, res) => {
 // Get all books 
 router.get('/api/books/', async (req, res) => {
     const errors = {}
-    const book = await Book.find({})
+    const book = await Book.find({}).select("-image")
     try {
         if(!book.length) {
             errors.no_book = "No Books"
             return res.status(400).send(errors)
         }
+   
 
         res.status(200).json(book)
 
@@ -65,8 +82,15 @@ router.get('/api/book/:id', async (req, res) =>  {
             errors.no_book = "Book not found"
             return res.status(404).json(errors)
         }
-
-        res.status(200).json(book)
+        
+        const payload = {
+            _id: book._id,
+            title: book.title,
+            description: book.description,
+            author: book.author,
+            published: book.published
+        }
+        res.status(200).json(payload)
     }catch(err) {
         res.status(400).json({error:"No Book Found"})
     }
@@ -110,13 +134,12 @@ router.patch('/api/book/:id', async (req, res) => {
         title:req.body.title,
         author: req.body.author,
         description:req.body.description,
-        image:req.body.image,
         published:req.body.published,
     }
 
     try {
         // Find book by ID
-       const book = await Book.findByIdAndUpdate({_id:req.params.id}, update, {returnOriginal: false})
+       const book = await Book.findByIdAndUpdate({_id:req.params.id}, update, {returnOriginal: false}).select("-image")
        if(!book) {
            return res.status(400).json({not_found:"Book not found"})
        }
@@ -125,7 +148,81 @@ router.patch('/api/book/:id', async (req, res) => {
        res.status(200).json(book)
         
     } catch (err) {
-        res.status(400).json({error:"Book not found"})
+        res.status(400).json({error:"Book not found."})
+    }
+})
+
+// Upload image
+// @POST
+// Upload image by ID
+router.post('/api/book/upload/:id', upload.single('image'), async (req, res) => {
+   if(!req.file) {
+       return res.status(400).json({message:"Image Field is required"})
+   }
+
+   const book = await Book.findById(req.params.id)
+
+   try {
+       if(!book) {
+           return res.status(400).json({error:"Book not found."})
+       }
+
+       const buffer = await sharp(req.file.buffer).resize({width:250, height:250}).png().toBuffer();
+       book.image = buffer
+       await book.save();
+       res.status(200).json({success:true})
+
+
+   }catch(err) {
+       res.status(400).json({error:"Book not found"})
+   } 
+   
+
+
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message})
+})
+
+
+
+router.get('/api/book/image/:id', async (req, res, next) => {
+    const book = await Book.findById(req.params.id)
+
+    try {
+        if(!book || !book.image) {
+            return res.status(400).json({error:"Book not found"})
+        } 
+
+        if(!book.image) {
+            return res.status(400).json({error:"Book has no image right now!"})
+        }
+        res.set('Content-Type', 'image/png')
+        res.send(book.image)
+
+    }catch(e) {
+        res.status(404).send()
+    }
+})
+
+// DELETE
+// Delete book image by id
+router.delete('/api/book/image/:id', async (req, res) => {
+    const book = await Book.findById(req.params.id)
+    
+    try{
+       
+        if(!book.image) {
+            return res.status(400).json({not_found: "You have not yet uploaded an image."})
+        }
+
+        book.image = undefined; // set the value to undefined
+        
+        await book.save()
+        res.json({success: true})
+
+    }catch(e) {
+        res.status(400).send({error:"Book not found."})
     }
 })
 
