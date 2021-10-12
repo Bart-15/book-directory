@@ -1,6 +1,5 @@
-import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS} from '../actions/types'
+import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS, GET_BOOK} from '../actions/types'
 import axios from 'axios'
-// set loading
 
 
 const getBooks = () => dispatch => {
@@ -12,7 +11,7 @@ const getBooks = () => dispatch => {
         }))
         .catch(err => dispatch({
             type:GET_ERRORS,
-            dispatch:err.response.data
+            payload:err.response.data
         }))
 
 }
@@ -22,6 +21,31 @@ const setBookLoading = () => {
     }
 }
 
+const getSingleBook = (id) => dispatch => {
+    dispatch(setBookLoading())
+    axios.get("/api/book/"+id)
+        .then(res =>  dispatch({
+            type:GET_BOOK,
+            payload:res.data
+        }))
+        .catch(err => dispatch({
+            type:GET_ERRORS,
+            payload:err.response.data
+        }))
+}
+
+const addBook = (data, history) => dispatch => {
+    axios.post('/api/book/', data)
+        .then(res =>  history.push('/'))
+        .catch(err => dispatch({
+            type:GET_ERRORS,
+            payload:err.response.data
+        }))
+
+}
+
 export  {
-    getBooks
+    getBooks,
+    getSingleBook,
+    addBook
 }

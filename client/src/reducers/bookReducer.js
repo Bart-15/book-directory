@@ -1,4 +1,4 @@
-import {GET_BOOKS, SET_BOOKLOADING} from '../actions/types';
+import {GET_BOOKS, SET_BOOKLOADING, GET_BOOK} from '../actions/types';
 
 const initialState = {
     book:{},
@@ -20,6 +20,15 @@ const bookReducer = (state = initialState, action) => {
                 loading:false,
                 books: action.payload
             }
+
+        case GET_BOOK :
+            return {
+                ...state,
+                loading:false,
+                book:action.payload
+            }
+
+            
         default: 
         return state;
     }

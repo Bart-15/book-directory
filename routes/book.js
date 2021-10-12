@@ -30,12 +30,12 @@ router.post('/api/book/', async (req, res) => {
     if(!isValid) {
         return res.status(400).json(errors)
     }
+
     try {
         const newBook = new Book({
             title: req.body.title,
             author:req.body.author,
             description:req.body.description,
-            image:req.body.image,
             published:req.body.published,
         })
 
@@ -83,14 +83,8 @@ router.get('/api/book/:id', async (req, res) =>  {
             return res.status(404).json(errors)
         }
         
-        const payload = {
-            _id: book._id,
-            title: book.title,
-            description: book.description,
-            author: book.author,
-            published: book.published
-        }
-        res.status(200).json(payload)
+        
+        res.status(200).json(book)
     }catch(err) {
         res.status(400).json({error:"No Book Found"})
     }
