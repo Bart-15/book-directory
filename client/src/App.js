@@ -4,6 +4,7 @@ import store from './store/store'
 import Books from './component/Books'
 import SingleBook from './component/SingleBook'
 import FormBook from './component/FormBook'
+import EditBookForm from './component/EditBookForm'
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,6 +19,7 @@ function App() {
               <Route exact path="/" component={Books} />
               <Route exact path="/book/details/:id" component={SingleBook} />
               <Route exact path="/add-book" component={FormBook}/>
+              <Route exact path="/edit/book/:id" component={EditBookForm} />
             </Switch>
           </Router>
       </Provider>

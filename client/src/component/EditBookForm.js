@@ -2,8 +2,13 @@ import React, { Component } from 'react'
 import {Container, Typography, Box, TextField, Button} from '@mui/material'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {addBook} from '../actions/bookActions'
-class FormBook extends Component {
+import {getSingleBook, updateBook} from '../actions/bookActions'
+import isEmpty from '../validation/isEmpty'
+class EditBookForm extends Component {
+
+    componentDidMount() {
+        this.props.getSingleBook(this.props.match.params.id)
+    }
 
     constructor() {
         super();
@@ -23,6 +28,23 @@ class FormBook extends Component {
         if(nextProps.errors){
             this.setState({errors:nextProps.errors})
         }
+
+        if(nextProps.book.book) {
+            const book = nextProps.book.book;
+            
+            book.title = !isEmpty(book.title) ? book.title : " "
+            book.author = !isEmpty(book.author) ? book.author : " "
+            book.description = !isEmpty(book.description) ? book.description : " "
+            book.published = !isEmpty(book.published) ? book.published : " "
+            this.setState({
+                id:book._id,
+                title: book.title,
+                author:book.author,
+                description: book.description,  
+                published: book.published,
+            })
+        
+        }
     }
 
     onChange(e) {
@@ -31,13 +53,16 @@ class FormBook extends Component {
     onSubmit(e) {
         e.preventDefault()
         
-        const newBook = {
+        const newUpdate = {
             title: this.state.title,
             author: this.state.author,
             description: this.state.description,
             published: this.state.published
         }
-        this.props.addBook(newBook, this.props.history)
+
+
+
+        this.props.updateBook(this.props.match.params.id, newUpdate, this.props.history)
         
     }
 
@@ -45,7 +70,7 @@ class FormBook extends Component {
         const {errors} = this.state;
         return (
             <Container>
-                <Typography variant="h3">Add Book</Typography>
+                <Typography variant="h3">Edit Book Details</Typography>
                 <Box sx={{ flexGrow: 1, maxWidth: 752, '& .MuiTextField-root': { m: 1, width: '50ch' } }} component="form" onSubmit={this.onSubmit} >
                         <TextField 
                         error={errors.title ? true : false}
@@ -92,8 +117,9 @@ class FormBook extends Component {
     }
 }
 const mapStateToProps = (state) => ({
-    errors: state.errors
+    errors: state.errors,
+    book: state.book
 })
 
 
-export default connect(mapStateToProps, {addBook}) (withRouter(FormBook));
+export default connect(mapStateToProps, {getSingleBook, updateBook}) (withRouter(EditBookForm));

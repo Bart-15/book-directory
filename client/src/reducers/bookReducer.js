@@ -1,4 +1,4 @@
-import {GET_BOOKS, SET_BOOKLOADING, GET_BOOK} from '../actions/types';
+import {GET_BOOKS, SET_BOOKLOADING, GET_BOOK, DELETE_BOOK, GET_ERRORS} from '../actions/types';
 
 const initialState = {
     book:{},
@@ -11,7 +11,7 @@ const bookReducer = (state = initialState, action) => {
         case SET_BOOKLOADING:
             return {
                 ...state,
-                loading:true
+                loading: true
             }
 
         case GET_BOOKS :
@@ -28,7 +28,17 @@ const bookReducer = (state = initialState, action) => {
                 book:action.payload
             }
 
+        case DELETE_BOOK :
+            return {
+                ...state,
+                books: state.books.filter(book => book._id !== action.payload)
+            } 
             
+        case GET_ERRORS : 
+            return {
+                ...state,
+                loading: false
+            }
         default: 
         return state;
     }

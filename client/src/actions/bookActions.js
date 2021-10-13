@@ -1,4 +1,4 @@
-import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS, GET_BOOK} from '../actions/types'
+import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS, GET_BOOK, DELETE_BOOK} from '../actions/types'
 import axios from 'axios'
 
 
@@ -12,7 +12,8 @@ const getBooks = () => dispatch => {
         .catch(err => dispatch({
             type:GET_ERRORS,
             payload:err.response.data
-        }))
+        })
+        )
 
 }
 const setBookLoading = () => {
@@ -41,11 +42,44 @@ const addBook = (data, history) => dispatch => {
             type:GET_ERRORS,
             payload:err.response.data
         }))
+}
+
+const deleteBook = (id) =>  dispatch => {
+    axios.delete(`/api/book/${id}`)
+        .then(res => {
+            dispatch({
+                type:DELETE_BOOK,
+                payload: id
+            })
+             dispatch(getBooks())
+        })
+        .catch(err => dispatch({
+            type:GET_ERRORS,
+            payload:err.response.data
+        })
+        )
+}
+
+const updateBook = (id, data, history) => dispatch => {
+    axios.patch(`/api/book/${id}`, data)
+    .then(res => {
+        history.push('/')
+        dispatch({
+            type:GET_ERRORS,
+            payload:{}
+        })
+    })
+    .catch(err => dispatch({
+        type:GET_ERRORS,
+        payload:err.response.data
+    }))
 
 }
 
 export  {
     getBooks,
     getSingleBook,
-    addBook
+    addBook,
+    deleteBook,
+    updateBook
 }

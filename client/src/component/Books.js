@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import bookAvatar  from '../image/book-avatar.png'
 import {Link} from 'react-router-dom'
 import { Container, List, ListItem, Divider, ListItemText, Avatar, ListItemAvatar, Typography, Button} from '@mui/material'
-import {getBooks} from '../actions/bookActions'
+import {getBooks, deleteBook} from '../actions/bookActions'
+import Spinner from './Spinner'
 class Books extends Component {
     constructor() {
         super()
@@ -13,7 +14,6 @@ class Books extends Component {
             }
     
     }
-
 
     componentWillMount() {
         this.props.getBooks()
@@ -25,63 +25,96 @@ class Books extends Component {
         }
     }
 
-
+    onDelete(id) {
+        this.props.deleteBook(id)
+    }
 
     render() {
-        const books = this.props.book;
+        const {books, loading} = this.props.book;
+        
+        let bookContainer;
+
+        if(books === null || loading) {
+            bookContainer = (
+                <Spinner loading={loading} />
+            )
+        } else  {
+            if(books.length > 0) {
+                bookContainer = (
+                    <div>
+                        <Button component={Link} to="/add-book">Add Book</Button>
+                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                            {
+                                books.map((book, idx) => {
+                                    return (
+                                        <>
+                                        <ListItem alignItems="flex-start" key={idx}>
+                                            <ListItemAvatar>
+                                                <Avatar alt="hello avatar" src={bookAvatar} />
+                                            </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={`${book.title}`}
+                                                    secondary={
+                                                        <React.Fragment>
+                                                        <Typography
+                                                            sx={{ display: 'inline' }}
+                                                            component="span"
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            to="/book-details/"
+                                                        >
+                                                            Author
+                                                        </Typography>
+                                                        {` — ${book.author}`}
+                                                        </React.Fragment>
+                                                    }
+                                                />
+                                        </ListItem>
+                                            <div style={{marginLeft:'75px'}}>
+                                                <Button variant="contained" component={Link} to={`/edit/book/${book._id}`} color="success">Edit</Button>
+                                                <Button variant="contained" component={Link} to={`/book/details/${book._id}`} color="primary">View</Button>
+                                                <Button onClick={this.onDelete.bind(this, book._id)} variant="contained" color="error">Delete</Button>
+                                             </div>
+                                        <br />
+                                        <Divider variant="inset" component="li" />
+                                        </>
+                                    )
+                                })
+                            }
+                        </List>
+                    </div>
+                )
+            } else {
+                bookContainer = (
+                    <div>
+                        <br />
+                        <Typography variant="h4">No Books :(</Typography>
+                        <Button variant="contained" component={Link} to="/add-book" color="primary">Add now!</Button>
+                    </div>
+                )
+            }
+            
+        } 
+
+
         return (
             <>
-                <Container>
-                    <Button component={Link} to="/add-book">Add Book</Button>
-                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                        {
-                            books.map((book, id) => {
-                                return (
-                                    <>
-                                    <ListItem alignItems="flex-start" key={id}>
-                                        <ListItemAvatar>
-                                            <Avatar alt="hello avatar" src={bookAvatar} />
-                                        </ListItemAvatar>
-                                        <Link to={`/book/details/${book._id}`} style={{textDecoration: 'none', color:"#333"}} >
-                                            <ListItemText
-                                                primary={`${book.title}`}
-                                                secondary={
-                                                    <React.Fragment>
-                                                    <Typography
-                                                        sx={{ display: 'inline' }}
-                                                        component="span"
-                                                        variant="body2"
-                                                        color="text.primary"
-                                                        to="/book-details/"
-                                                    >
-                                                        Author
-                                                    </Typography>
-                                                    {` — ${book.author}`}
-                                                    </React.Fragment>
-                                                }
-                                            />
-                                        </Link>
-                                    </ListItem>
-                                    <Divider variant="inset" component="li" />
-                                    </>
-                                )
-                            })
-                        }
-                    </List>
-                </Container>
-
-
+             <Container>
+                {bookContainer}
+             </Container>
             </>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    book:state.book.books
+    book:state.book
 })
 
 Books.propTypes = {
-    book: PropTypes.object.isRequired,
+    book: PropTypes.array.isRequired,
+    getBooks: PropTypes.func.isRequired,
+    deleteBook: PropTypes.func.isRequired,
 }
 
-export default connect(mapStateToProps, {getBooks}) (Books);
+export default connect(mapStateToProps, {getBooks, deleteBook}) (Books);
