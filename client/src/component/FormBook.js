@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {Container, Typography, Box, TextField, Button} from '@mui/material'
-import {withRouter} from 'react-router-dom'
+import {withRouter, Link} from 'react-router-dom'
 import {connect} from 'react-redux'
+import moment from 'moment'
 import {addBook} from '../actions/bookActions'
 class FormBook extends Component {
 
@@ -35,7 +36,7 @@ class FormBook extends Component {
             title: this.state.title,
             author: this.state.author,
             description: this.state.description,
-            published: this.state.published
+            published: moment(this.state.published).format("YYYY-MM-DD")
         }
         this.props.addBook(newBook, this.props.history)
         
@@ -45,6 +46,8 @@ class FormBook extends Component {
         const {errors} = this.state;
         return (
             <Container>
+                <br />
+                <Button type="button" variant="contained" component={Link} to="/" color="error">Go Back</Button>
                 <Typography variant="h3">Add Book</Typography>
                 <Box sx={{ flexGrow: 1, maxWidth: 752, '& .MuiTextField-root': { m: 1, width: '50ch' } }} component="form" onSubmit={this.onSubmit} >
                         <TextField 
@@ -67,11 +70,13 @@ class FormBook extends Component {
 
                         <TextField 
                         error={errors.description ? true : false}
-                        helperText={errors.description ? errors.description : ""}
-                        label="Description"
-                        variant="outlined" 
+                        helperText={errors.description ? errors.description : ""}                        variant="outlined" 
                         name="description" 
-                        value={this.state.description} 
+                        value={this.state.description}
+                        id="outlined-multiline-static"
+                        label="Description"
+                        multiline
+                        rows={4}
                         onChange={this.onChange} />
 
                         <TextField 
@@ -84,7 +89,8 @@ class FormBook extends Component {
                         InputLabelProps={{
                         shrink: true,
                         }}
-                />
+                          />
+                          
                         <Button type="submit" variant="contained"  color="primary">Submit</Button>
                 </Box>
             </Container>

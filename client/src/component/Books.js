@@ -6,13 +6,16 @@ import {Link} from 'react-router-dom'
 import { Container, List, ListItem, Divider, ListItemText, Avatar, ListItemAvatar, Typography, Button} from '@mui/material'
 import {getBooks, deleteBook} from '../actions/bookActions'
 import Spinner from './Spinner'
+
+
+
+
 class Books extends Component {
     constructor() {
         super()
             this.state = {
                 errors:{}
-            }
-    
+        }
     }
 
     componentWillMount() {
@@ -31,7 +34,7 @@ class Books extends Component {
 
     render() {
         const {books, loading} = this.props.book;
-        
+        const {classes} = this.props;
         let bookContainer;
 
         if(books === null || loading) {
@@ -42,7 +45,8 @@ class Books extends Component {
             if(books.length > 0) {
                 bookContainer = (
                     <div>
-                        <Button component={Link} to="/add-book">Add Book</Button>
+                        <br />
+                        <Button variant="contained" color="primary" component={Link} to="/add-book">Add Book</Button>
                         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                             {
                                 books.map((book, idx) => {
@@ -71,9 +75,9 @@ class Books extends Component {
                                                 />
                                         </ListItem>
                                             <div style={{marginLeft:'75px'}}>
-                                                <Button variant="contained" component={Link} to={`/edit/book/${book._id}`} color="success">Edit</Button>
-                                                <Button variant="contained" component={Link} to={`/book/details/${book._id}`} color="primary">View</Button>
-                                                <Button onClick={this.onDelete.bind(this, book._id)} variant="contained" color="error">Delete</Button>
+                                                <Button className={classes.action} variant="contained" component={Link} to={`/edit/book/${book._id}`} color="success">Edit</Button>
+                                                <Button className={classes.action} variant="contained" component={Link} to={`/book/details/${book._id}`} color="primary">View</Button>
+                                                <Button className={classes.action} onClick={this.onDelete.bind(this, book._id)} variant="contained" color="error">Delete</Button>
                                              </div>
                                         <br />
                                         <Divider variant="inset" component="li" />
