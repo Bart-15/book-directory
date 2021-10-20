@@ -5,7 +5,7 @@ import Books from './component/Books'
 import SingleBook from './component/SingleBook'
 import FormBook from './component/FormBook'
 import EditBookForm from './component/EditBookForm'
-
+import UploadImage from './component/UploadImage'
 import {
   BrowserRouter as Router,
   Switch,
@@ -21,6 +21,7 @@ function App() {
               <Route exact path="/book/details/:id" component={SingleBook} />
               <Route exact path="/add-book" component={FormBook}/>
               <Route exact path="/edit/book/:id" component={EditBookForm} />
+              <Route exact path="/upload/image/:id" component={UploadImage} />
             </Switch>
           </Router>
       </Provider>

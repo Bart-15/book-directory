@@ -3,11 +3,29 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types'
 import bookAvatar  from '../image/book-avatar.png'
 import {Link} from 'react-router-dom'
+import { withStyles } from '@mui/styles';
 import { Container, List, ListItem, Divider, ListItemText, Avatar, ListItemAvatar, Typography, Button} from '@mui/material'
 import {getBooks, deleteBook} from '../actions/bookActions'
 import Spinner from './Spinner'
+import {ActionContainer} from './styles/styledBooks'
 
-
+const styles = {
+    btn : {
+        fontSize:'10px',
+        letterSpacing:'2px',
+        margin:'2px'
+    },
+    addBtn : {
+        fontSize:'12px',
+        backgroundColor:'#DF6589FF',
+        letterSpacing:'2px',
+        color:'#3C1053FF',
+        '&:hover' : {
+            backgroundColor:'#3C1053FF',
+            color:'#DF6589FF'
+        }
+    }
+}
 
 
 class Books extends Component {
@@ -18,7 +36,7 @@ class Books extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.getBooks()
     }
 
@@ -46,17 +64,18 @@ class Books extends Component {
                 bookContainer = (
                     <div>
                         <br />
-                        <Button variant="contained" color="primary" component={Link} to="/add-book">Add Book</Button>
-                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                        <Button variant="contained" className={classes.addBtn}component={Link} to="/add-book">Add Book</Button>
+                        
                             {
-                                books.map((book, idx) => {
+                                books.map((book) => {
                                     return (
                                         <>
-                                        <ListItem alignItems="flex-start" key={idx}>
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} key={book._id}>    
+                                        <ListItem  alignItems="flex-start" >
                                             <ListItemAvatar>
                                                 <Avatar alt="hello avatar" src={bookAvatar} />
                                             </ListItemAvatar>
-                                                <ListItemText
+                                                <ListItemText 
                                                     primary={`${book.title}`}
                                                     secondary={
                                                         <React.Fragment>
@@ -74,18 +93,20 @@ class Books extends Component {
                                                     }
                                                 />
                                         </ListItem>
-                                            <div style={{marginLeft:'75px'}}>
-                                                <Button className={classes.action} variant="contained" component={Link} to={`/edit/book/${book._id}`} color="success">Edit</Button>
-                                                <Button className={classes.action} variant="contained" component={Link} to={`/book/details/${book._id}`} color="primary">View</Button>
-                                                <Button className={classes.action} onClick={this.onDelete.bind(this, book._id)} variant="contained" color="error">Delete</Button>
-                                             </div>
+                                            <ActionContainer>
+                                                <Button className={classes.btn}  variant="contained" component={Link} to={`/edit/book/${book._id}`} color="success">Edit</Button>
+                                                <Button className={classes.btn}  variant="contained" component={Link} to={`/book/details/${book._id}`} color="primary">View</Button>
+                                                <Button className={classes.btn} component={Link} to={`/upload/image/${book._id}`}  variant="contained">Upload</Button>
+                                                <Button className={classes.btn}  onClick={this.onDelete.bind(this, book._id)} variant="contained" color="error">Delete</Button>
+                                             </ActionContainer>
                                         <br />
                                         <Divider variant="inset" component="li" />
+                                        </List>
                                         </>
                                     )
                                 })
+                           
                             }
-                        </List>
                     </div>
                 )
             } else {
@@ -116,9 +137,9 @@ const mapStateToProps = (state) => ({
 })
 
 Books.propTypes = {
-    book: PropTypes.array.isRequired,
+    book: PropTypes.object.isRequired,
     getBooks: PropTypes.func.isRequired,
     deleteBook: PropTypes.func.isRequired,
 }
 
-export default connect(mapStateToProps, {getBooks, deleteBook}) (Books);
+export default connect(mapStateToProps, {getBooks, deleteBook}) (withStyles(styles)(Books));

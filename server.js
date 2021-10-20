@@ -11,7 +11,8 @@ const book = require('./routes/book')
 const port = process.env.PORT || 5000;
 
 // body parser
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false,  limit: '50mb',
+parameterLimit: 100000}));
 app.use(bodyParser.json());
 
 app.use(book)

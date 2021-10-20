@@ -1,5 +1,6 @@
 const express = require('express');
 const Book = require('../model/book')
+const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
 const sharp = require('sharp');
@@ -182,7 +183,6 @@ router.post('/api/book/upload/:id', upload.single('image'), async (req, res) => 
 
 router.get('/api/book/image/:id', async (req, res, next) => {
     const book = await Book.findById(req.params.id)
-
     try {
         if(!book || !book.image) {
             return res.status(400).json({error:"Book not found"})
@@ -191,8 +191,9 @@ router.get('/api/book/image/:id', async (req, res, next) => {
         if(!book.image) {
             return res.status(400).json({error:"Book has no image right now!"})
         }
-        res.set('Content-Type', 'image/png')
-        res.send(book.image)
+        const base64 = new Buffer.from(book.image).toString("base64")
+       
+        res.json(base64)
 
     }catch(e) {
         res.status(404).send()

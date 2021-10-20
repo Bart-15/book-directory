@@ -1,9 +1,10 @@
-import {GET_BOOKS, SET_BOOKLOADING, GET_BOOK, DELETE_BOOK, GET_ERRORS} from '../actions/types';
+import {GET_BOOKS, SET_BOOKLOADING, GET_BOOK, DELETE_BOOK, GET_ERRORS, BOOK_IMAGE} from '../actions/types';
 
 const initialState = {
     book:{},
     books:[],
-    loading:false
+    loading:false,
+    book_image:null
 };
 
 const bookReducer = (state = initialState, action) => {
@@ -34,6 +35,11 @@ const bookReducer = (state = initialState, action) => {
                 books: state.books.filter(book => book._id !== action.payload)
             } 
             
+        case BOOK_IMAGE :  
+        return {
+            ...state,
+            book_image:action.payload,
+        }  
         case GET_ERRORS : 
             return {
                 ...state,
