@@ -61,7 +61,7 @@ const styles = (theme) => ({
         return (
             <Container>
                 <br />
-                <Button variant="contained" color="error" component={Link} to="/" >Go Back</Button>
+                <Button variant="contained" color="secondary" component={Link} to="/" >Go Back</Button>
                 <Typography variant="h5">Upload Image</Typography>
                 <Card>
                     <CardContent>

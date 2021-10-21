@@ -5,6 +5,7 @@ import { withStyles } from '@mui/styles';
 import moment from 'moment';
 import {connect} from 'react-redux'
 import {getSingleBook, updateBook} from '../actions/bookActions'
+import Spinner from './Spinner'
 import isEmpty from '../validation/isEmpty'
 
 
@@ -16,7 +17,8 @@ const useStyles = theme => ({
     }, 
 
     form : {
-        padding:'5px'
+        marginTop:'5px',
+        marginBottom:'5px'
     }
 })
 
@@ -84,61 +86,83 @@ class EditBookForm extends Component {
 
     render() {
         const {errors} = this.state;
-        const {classes} = this.props;   
+        const {book, loading} = this.props.book;
+        const {classes} = this.props;  
+        
+        let container;
+
+        if(!book || loading) {
+            container = (
+               <Spinner loading={loading} />
+            )
+        } else {
+            if(book) {
+                container = (
+                    <Box className={classes.formRoot}  component="form" onSubmit={this.onSubmit} >
+                    <TextField 
+                    error={errors.title ? true : false}
+                    className={classes.form}
+                    helperText={errors.title ? errors.title : ""}
+                    label="Title"
+                    variant="outlined" 
+                    name="title" 
+                    value={this.state.title} 
+                    onChange={this.onChange} />
+
+                    <TextField 
+                    error={errors.author ? true : false}
+                    className={classes.form}
+                    helperText={errors.author ? errors.author : ""}
+                    label="Author"
+                    variant="outlined" 
+                    name="author" 
+                    value={this.state.author} 
+                    onChange={this.onChange} />
+
+                    <TextField 
+                    error={errors.description ? true : false}
+                    className={classes.form}
+                    helperText={errors.description ? errors.description : ""}
+                    label="Description"
+                    multiline
+                    rows={4}
+                    variant="outlined" 
+                    name="description" 
+                    value={this.state.description} 
+                    onChange={this.onChange} />
+
+                    <TextField 
+                    className={classes.form}
+                    type="date"
+                    variant="outlined" 
+                    name="published" 
+                    value={this.state.published} 
+                    onChange={this.onChange}
+                    sx={{ width: 220 }}
+                    InputLabelProps={{
+                    shrink: true,
+                    }}
+                 />
+                 <div>
+                    <Button type="submit" variant="contained"  color="primary">Submit</Button>
+                 </div>
+            </Box>
+                )
+            } else {
+                container = (
+                    <Typography variant="h5">Please Reload the page</Typography>
+                )
+            }
+        }
+
+
         return (
             <Container>
                 <br />
-                <Button type="button" variant="contained" component={Link} to="/" color="error">Go Back</Button>
+                <Button type="button" variant="contained" component={Link} to="/" color="secondary">Go Back</Button>
                 <Typography variant="h3">Edit Book Details</Typography>
-                <Box className={classes.formRoot}  component="form" onSubmit={this.onSubmit} >
-                        <TextField 
-                        error={errors.title ? true : false}
-                        className={classes.form}
-                        helperText={errors.title ? errors.title : ""}
-                        label="Title"
-                        variant="outlined" 
-                        name="title" 
-                        value={this.state.title} 
-                        onChange={this.onChange} />
-
-                        <TextField 
-                        error={errors.author ? true : false}
-                        className={classes.form}
-                        helperText={errors.author ? errors.author : ""}
-                        label="Author"
-                        variant="outlined" 
-                        name="author" 
-                        value={this.state.author} 
-                        onChange={this.onChange} />
-
-                        <TextField 
-                        error={errors.description ? true : false}
-                        className={classes.form}
-                        helperText={errors.description ? errors.description : ""}
-                        label="Description"
-                        multiline
-                        rows={4}
-                        variant="outlined" 
-                        name="description" 
-                        value={this.state.description} 
-                        onChange={this.onChange} />
-
-                        <TextField 
-                        className={classes.form}
-                        type="date"
-                        variant="outlined" 
-                        name="published" 
-                        value={this.state.published} 
-                        onChange={this.onChange}
-                        sx={{ width: 220 }}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                     />
-                     <div>
-                        <Button type="submit" variant="contained"  color="primary">Submit</Button>
-                     </div>
-                </Box>
+                {container}
+                    
             </Container>
         )
     }

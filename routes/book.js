@@ -38,6 +38,7 @@ router.post('/api/book/', async (req, res) => {
             author:req.body.author,
             description:req.body.description,
             published:req.body.published,
+            image:null
         })
 
         await newBook.save()
@@ -55,14 +56,12 @@ router.post('/api/book/', async (req, res) => {
 // Get all books 
 router.get('/api/books/', async (req, res) => {
     const errors = {}
-    const book = await Book.find({}).select("-image")
+    const book = await Book.find({})
     try {
         if(!book.length) {
             errors.no_book = "No Books"
             return res.status(400).send(errors)
         }
-   
-
         res.status(200).json(book)
 
     }catch(err) {
@@ -83,8 +82,8 @@ router.get('/api/book/:id', async (req, res) =>  {
             errors.no_book = "Book not found"
             return res.status(404).json(errors)
         }
-        
-        
+
+
         res.status(200).json(book)
     }catch(err) {
         res.status(400).json({error:"No Book Found"})
@@ -163,9 +162,10 @@ router.post('/api/book/upload/:id', upload.single('image'), async (req, res) => 
        }
 
        const buffer = await sharp(req.file.buffer).resize({width:250, height:250}).png().toBuffer();
-       book.image = buffer
+       const base64 = new Buffer.from(buffer).toString("base64")
+       book.image = base64;
        await book.save();
-       res.status(200).json({success:true})
+       res.json({success: true})
 
 
    }catch(err) {
@@ -191,11 +191,10 @@ router.get('/api/book/image/:id', async (req, res, next) => {
         if(!book.image) {
             return res.status(400).json({error:"Book has no image right now!"})
         }
-        const base64 = new Buffer.from(book.image).toString("base64")
-       
-        res.json(base64)
+        res.setHeader('content-type', 'image/jpg');
+        res.send(book.image)
 
-    }catch(e) {
+    }catch(e) { 
         res.status(404).send()
     }
 })

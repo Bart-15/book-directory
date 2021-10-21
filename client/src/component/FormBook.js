@@ -1,9 +1,26 @@
 import React, { Component } from 'react'
 import {Container, Typography, Box, TextField, Button} from '@mui/material'
+import {withStyles} from '@mui/styles'
 import {withRouter, Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 import moment from 'moment'
 import {addBook} from '../actions/bookActions'
+
+const useStyles = theme => ({
+    formRoot : {
+        flexGrow: 1,
+         maxWidth: 752,
+          '& .MuiTextField-root': { width: '50ch', }
+    }, 
+
+    form : {
+        marginTop:'5px',
+        marginBottom:'5px',
+       
+    }
+})
+
+
 class FormBook extends Component {
 
     constructor() {
@@ -44,15 +61,17 @@ class FormBook extends Component {
 
     render() {
         const {errors} = this.state;
+        const {classes} = this.props;
         return (
             <Container>
                 <br />
-                <Button type="button" variant="contained" component={Link} to="/" color="error">Go Back</Button>
+                <Button type="button" variant="contained" component={Link} to="/" color="secondary">Go Back</Button>
                 <Typography variant="h3">Add Book</Typography>
-                <Box sx={{ flexGrow: 1, maxWidth: 752, '& .MuiTextField-root': { m: 1, width: '50ch' } }} component="form" onSubmit={this.onSubmit} >
+                <Box className={classes.formRoot}  component="form" onSubmit={this.onSubmit} >
                         <TextField 
                         error={errors.title ? true : false}
                         helperText={errors.title ? errors.title : ""}
+                        className={classes.form}
                         label="Title"
                         variant="outlined" 
                         name="title" 
@@ -62,6 +81,7 @@ class FormBook extends Component {
                         <TextField 
                         error={errors.author ? true : false}
                         helperText={errors.author ? errors.author : ""}
+                        className={classes.form}
                         label="Author"
                         variant="outlined" 
                         name="author" 
@@ -70,7 +90,9 @@ class FormBook extends Component {
 
                         <TextField 
                         error={errors.description ? true : false}
-                        helperText={errors.description ? errors.description : ""}                        variant="outlined" 
+                        helperText={errors.description ? errors.description : ""}
+                        className={classes.form}                        
+                        variant="outlined" 
                         name="description" 
                         value={this.state.description}
                         id="outlined-multiline-static"
@@ -81,6 +103,7 @@ class FormBook extends Component {
 
                         <TextField 
                         type="date"
+                        className={classes.form}
                         variant="outlined" 
                         name="published" 
                         value={this.state.published} 
@@ -90,8 +113,9 @@ class FormBook extends Component {
                         shrink: true,
                         }}
                           />
-                          
-                        <Button type="submit" variant="contained"  color="primary">Submit</Button>
+                        <div>
+                         <Button type="submit" variant="contained"  color="primary">Submit</Button>
+                        </div>  
                 </Box>
             </Container>
         )
@@ -102,4 +126,4 @@ const mapStateToProps = (state) => ({
 })
 
 
-export default connect(mapStateToProps, {addBook}) (withRouter(FormBook));
+export default connect(mapStateToProps, {addBook}) (withStyles(useStyles)(withRouter(FormBook)));

@@ -16,7 +16,7 @@ const BookSchema =  new Schema({
         required: true, 
     },
     image : {
-        type:Buffer, 
+        type:String, 
     },
     published : {
         type: Date,

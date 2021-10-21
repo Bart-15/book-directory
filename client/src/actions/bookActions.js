@@ -1,4 +1,4 @@
-import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS, GET_BOOK, DELETE_BOOK, CLEAR_ERRORS, BOOK_IMAGE} from '../actions/types'
+import {SET_BOOKLOADING, GET_BOOKS, GET_ERRORS, GET_BOOK, DELETE_BOOK, CLEAR_ERRORS} from '../actions/types'
 import axios from 'axios'
 
 const setBookLoading = () => {
@@ -28,7 +28,6 @@ const getBooks = () => dispatch => {
 }
 
 const getSingleBook = (id) => dispatch => {
-    dispatch(getImage(id))
     dispatch(setBookLoading())
     axios.get("/api/book/"+id)
         .then(res =>  dispatch({
@@ -41,10 +40,13 @@ const getSingleBook = (id) => dispatch => {
         }))
 }
 
+
+
 const addBook = (data, history) => dispatch => {
     axios.post('/api/book/', data)
         .then(res => {
             history.push('/')
+            dispatch(getBooks())
         })
         .catch(err => dispatch({
             type:GET_ERRORS,
@@ -72,24 +74,11 @@ const updateBook = (id, data, history) => dispatch => {
     axios.patch(`/api/book/${id}`, data)
     .then(res => {
         history.push('/')
-        dispatch(clearErrorMSG())
     })
     .catch(err => dispatch({
         type:GET_ERRORS,
         payload:err.response.data
     }))
-}
-
-const getImage = (id) => dispatch => {
-    axios.get(`/api/book/image/${id}`)
-        .then(res => dispatch({
-            type:BOOK_IMAGE,
-            payload:res.data
-        }))
-        .catch(err => dispatch({
-            type:BOOK_IMAGE,
-            payload:null
-        }))
 }
 
 const uploadImg = (id,data, history) => dispatch => {
@@ -107,6 +96,5 @@ export  {
     addBook,
     deleteBook,
     updateBook,
-    getImage,
     uploadImg,
 }
