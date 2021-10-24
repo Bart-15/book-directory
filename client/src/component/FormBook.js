@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Container, Typography, Box, TextField, Button} from '@mui/material'
+import {Container, Typography, Box, TextField, Button, CssBaseline} from '@mui/material'
 import {withStyles} from '@mui/styles'
 import {withRouter, Link} from 'react-router-dom'
 import {connect} from 'react-redux'
@@ -10,14 +10,8 @@ const useStyles = theme => ({
     formRoot : {
         flexGrow: 1,
          maxWidth: 752,
-          '& .MuiTextField-root': { width: '50ch', }
+          '& .MuiTextField-root': { width: '45ch', margin:'2%' }
     }, 
-
-    form : {
-        marginTop:'5px',
-        marginBottom:'5px',
-       
-    }
 })
 
 
@@ -65,6 +59,7 @@ class FormBook extends Component {
         return (
             <Container>
                 <br />
+                <CssBaseline />
                 <Button type="button" variant="contained" component={Link} to="/" color="secondary">Go Back</Button>
                 <Typography variant="h3">Add Book</Typography>
                 <Box className={classes.formRoot}  component="form" onSubmit={this.onSubmit} >

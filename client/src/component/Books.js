@@ -67,10 +67,10 @@ class Books extends Component {
                         <Button variant="contained" className={classes.addBtn}component={Link} to="/add-book">Add Book</Button>
                         
                             {
-                                books.map((book) => {
+                                books.map((book, idx) => {
                                     return (
-                                        <>
-                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} key={book._id}>    
+                                    <div key={idx}>
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}  >    
                                         <ListItem  alignItems="flex-start" >
                                             <ListItemAvatar>
                                                 <Avatar alt="hello avatar" src={bookAvatar} />
@@ -102,7 +102,7 @@ class Books extends Component {
                                         <br />
                                         <Divider variant="inset" component="li" />
                                         </List>
-                                        </>
+                                    </div>  
                                     )
                                 })
                            
@@ -113,7 +113,7 @@ class Books extends Component {
                 bookContainer = (
                     <div>
                         <br />
-                        <Typography variant="h4">No Books :(</Typography>
+                        <Typography variant="h4">No Books, try to add.</Typography>
                         <Button variant="contained" component={Link} to="/add-book" color="primary">Add now!</Button>
                     </div>
                 )

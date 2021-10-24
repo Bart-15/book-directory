@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Container, Typography, Box, TextField, Button} from '@mui/material'
+import {Container, Typography, Box, TextField, Button, CssBaseline} from '@mui/material'
 import {withRouter, Link} from 'react-router-dom'
 import { withStyles } from '@mui/styles';
 import moment from 'moment';
@@ -13,7 +13,7 @@ const useStyles = theme => ({
     formRoot : {
         flexGrow: 1,
          maxWidth: 752,
-          '& .MuiTextField-root': { width: '50ch', }
+          '& .MuiTextField-root': { width: '45ch', margin:'2%' }
     }, 
 
     form : {
@@ -158,6 +158,7 @@ class EditBookForm extends Component {
 
         return (
             <Container>
+                <CssBaseline />
                 <br />
                 <Button type="button" variant="contained" component={Link} to="/" color="secondary">Go Back</Button>
                 <Typography variant="h3">Edit Book Details</Typography>

@@ -2,11 +2,7 @@
 import {Provider} from 'react-redux'
 import './index.css'
 import store from './store/store'
-import Books from './component/Books'
-import SingleBook from './component/SingleBook'
-import FormBook from './component/FormBook'
-import EditBookForm from './component/EditBookForm'
-import UploadImage from './component/UploadImage'
+import {Books, UploadImage, FormBook, EditBookForm, SingleBook} from './component'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import {

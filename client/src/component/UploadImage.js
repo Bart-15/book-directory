@@ -57,7 +57,6 @@ const styles = (theme) => ({
         const {classes} = this.props;
         const {errors} = this.state;
 
-        console.log(errors)
         return (
             <Container>
                 <br />

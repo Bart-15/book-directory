@@ -1,6 +1,5 @@
 const express = require('express');
 const Book = require('../model/book')
-const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
 const sharp = require('sharp');
@@ -180,7 +179,8 @@ router.post('/api/book/upload/:id', upload.single('image'), async (req, res) => 
 })
 
 
-
+//@GET
+// Get Book image by ID
 router.get('/api/book/image/:id', async (req, res, next) => {
     const book = await Book.findById(req.params.id)
     try {
@@ -209,9 +209,7 @@ router.delete('/api/book/image/:id', async (req, res) => {
         if(!book.image) {
             return res.status(400).json({not_found: "You have not yet uploaded an image."})
         }
-
         book.image = undefined; // set the value to undefined
-        
         await book.save()
         res.json({success: true})
 

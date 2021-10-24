@@ -14,14 +14,14 @@ const useStyles = theme => ({
     description : {
         lineHeight :'25px',
         textIndent :'20px',
-        fontWeight:'600',
         fontSize:'15px',
         letterSpacing:'1px',
         color:theme.palette.secondary.main
     },
 
     title : {
-        textTransform:'uppercase'
+        textTransform:'uppercase',
+        letterSpacing:'1px'
     },
 
     date : {
@@ -32,7 +32,7 @@ const useStyles = theme => ({
     },
 
     author : {
-        fontWeight:'600px',
+        fontWeight:'600',
         letterSpacing:'2px'
     }
 })
@@ -64,17 +64,15 @@ class SingleBook extends Component {
             if(book) {
                 container = (
                     <div>
-                    <Card sx={{ maxWidth: 700, alignItems:'center', boxShadow: 3 }}>
+                    <Card sx={{ maxWidth: 500, alignItems:'center', boxShadow: 3 }}>
                         <CardContent>
                             <Typography className={classes.title} variant="h4">{title}</Typography>
                                 <CardInfo>
-                                    <a href={`data:image/png;base64,${image}`} target="_blank" rel="noreferrer">
                                     <img src={ image ? `data:image/png;base64,${image}` : noImage} 
                                     height="250" 
                                     width="250"
                                     alt="book"/>
-                                    </a>
-                                    <Typography className={classes.author} variant="subtitle1">Author:{author}</Typography>
+                                    <Typography className={classes.author} variant="subtitle1">Author: {author}</Typography>
                                     <Typography className={classes.date} variant="subtitle1">{moment(published).format('MMMM Do YYYY')}</Typography>
                                     <Typography className={classes.description} variant="body2">{description}</Typography>
                                 </CardInfo>
