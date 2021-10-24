@@ -17,10 +17,6 @@ parameterLimit: 100000}));
 app.use(bodyParser.json());
 
 
-
-
-
-
 app.use(book)
 
 // Server static if in prod
