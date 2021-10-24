@@ -15,7 +15,7 @@ const clearErrorMSG = () => {
 
 const getBooks = () => dispatch => {
     dispatch(setBookLoading())
-    // dispatch(clearErrorMSG())
+    dispatch(clearErrorMSG())
     axios.get('/api/books/')
         .then(res => dispatch({
             type:GET_BOOKS,
